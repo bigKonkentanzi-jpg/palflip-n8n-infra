@@ -1,0 +1,55 @@
+databases:
+  - name: palflip-n8n-db
+    plan: free
+    databaseName: n8n
+    user: n8n
+
+services:
+  - type: web
+    name: palflip-n8n
+    runtime: image
+    image:
+      url: docker.io/n8nio/n8n:latest
+    plan: free
+    envVars:
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_DATABASE
+        fromDatabase:
+          name: palflip-n8n-db
+          property: database
+      - key: DB_POSTGRESDB_HOST
+        fromDatabase:
+          name: palflip-n8n-db
+          property: host
+      - key: DB_POSTGRESDB_PORT
+        fromDatabase:
+          name: palflip-n8n-db
+          property: port
+      - key: DB_POSTGRESDB_USER
+        fromDatabase:
+          name: palflip-n8n-db
+          property: user
+      - key: DB_POSTGRESDB_PASSWORD
+        fromDatabase:
+          name: palflip-n8n-db
+          property: password
+      - key: N8N_ENCRYPTION_KEY
+        generateValue: true
+      - key: N8N_PROTOCOL
+        value: https
+      - key: N8N_PORT
+        value: "5678"
+      - key: NODE_ENV
+        value: production
+      - key: GENERIC_TIMEZONE
+        value: Africa/Johannesburg
+      # IMPORTANT: N8N_HOST and WEBHOOK_URL below use a placeholder.
+      # After your first deploy, Render assigns your real address
+      # (something like palflip-n8n.onrender.com). Come back and update
+      # BOTH of these two values to match it exactly, then redeploy —
+      # webhooks silently fail to fire correctly until you do this.
+      - key: N8N_HOST
+        value: palflip-n8n.onrender.com
+      - key: WEBHOOK_URL
+        value: https://palflip-n8n.onrender.com/
